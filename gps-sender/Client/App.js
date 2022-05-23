@@ -19,7 +19,7 @@ export default function App() {
         setErrorMsg("Permission to access location was denied");
         setIsTracking(false);
         return;
-      }
+      }       
       setPermission(true);
       setErrorMsg("");
     } else setIsTracking(true);
