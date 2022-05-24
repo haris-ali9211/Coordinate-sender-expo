@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const http = require("http");
-const { Server } = require("socket.io");
+const socketIO = require('socket.io');
 const cors = require("cors");
 
 
@@ -9,16 +9,16 @@ app.use(cors());
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:19002/",
-        methods: ["GET", "POst"]
-    },
+const PORT = process.env.PORT || 5000;
+
+
+const io = socketIO(server);
+io.on('connection', socket => {
+  console.log('client connected on websocket');
+
+  setInterval(() => {
+    io.emit('ping', { data: (new Date()) / 1 });
+  }, 1000);
 });
 
-io.on("connection", (socket)=>{
-    console.log(`User Connected ${socket.id}`)
-})
-server.listen(3001, () => {
-    console.log("🚀 ~ Server is listening");
-});
+server.listen(5000, () => console.log(`Server Running on Port: http://localhost:5000`));

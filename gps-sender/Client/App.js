@@ -3,8 +3,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import * as Location from "expo-location";
 import * as Application from "expo-application";
-import io  from 'socket.io-client';
-const socket = io.connect("http://localhost:3001"); 
+import io from 'socket.io-client';
+// const socket = io.connect("http://localhost:3001"); 
 
 export default function App() {
 
@@ -54,9 +54,23 @@ export default function App() {
     };
   }, [isTracking]);
 
+
+
   const sentMenages = () => {
 
   }
+
+  const [data, setData] = useState(null)
+  console.log("🚀 ~ file: App.js ~ line 64 ~ App ~ data", data)
+
+  useEffect(() => {
+    const socket = io('http://localhost:5000', {
+      transports: ['websocket']
+    });
+    socket.on("ping", (data: any) => {
+      setData(data)
+    })
+  }, [])
 
 
   return (
