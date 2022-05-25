@@ -5,7 +5,6 @@ const socketIO = require('socket.io');
 const cors = require("cors");
 
 
-app.use(cors());
 
 const server = http.createServer(app);
 
@@ -21,4 +20,4 @@ io.on('connection', socket => {
   }, 1000);
 });
 
-server.listen(5000, () => console.log(`Server Running on Port: http://localhost:5000`));
+server.listen(PORT, () => console.log(`Server Running on Port: http://localhost:${PORT}`));

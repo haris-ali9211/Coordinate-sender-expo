@@ -64,7 +64,7 @@ export default function App() {
   console.log("🚀 ~ file: App.js ~ line 64 ~ App ~ data", data)
 
   useEffect(() => {
-    const socket = io('http://localhost:5000', {
+    const socket = io('https://coordinate-sender-expo.herokuapp.com', {
       transports: ['websocket']
     });
     socket.on("ping", (data: any) => {
