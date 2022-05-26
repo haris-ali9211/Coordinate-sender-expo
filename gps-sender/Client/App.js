@@ -12,6 +12,7 @@ export default function App() {
   const [isTracking, setIsTracking] = React.useState(false);
   const [permission, setPermission] = React.useState(false);
   const [location, setLocation] = useState(null);
+  const [sendData, setSendData] = useState(null);
 
 
   const getLocation = async () => {
@@ -27,6 +28,7 @@ export default function App() {
     } else setIsTracking(true);
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location);
+    setSendData(location)
   };
 
   const handleClick = () => {
@@ -61,16 +63,22 @@ export default function App() {
   }
 
   const [data, setData] = useState(null)
-  console.log("🚀 ~ file: App.js ~ line 64 ~ App ~ data", data)
 
   useEffect(() => {
-    const socket = io('https://coordinate-sender-expo.herokuapp.com', {
+    const socket = io('http://localhost:5000', {
+      // const socket = io('https://coordinate-sender-expo.herokuapp.com', {
       transports: ['websocket']
     });
     socket.on("ping", (data: any) => {
       setData(data)
     })
-  }, [])
+    if (isTracking) {
+      setInterval(() => {
+        console.log("🚀 ~ file: App.js ~ line 75 ~ useEffect ~ isTracking", location) 
+        socket.emit("send_message", { location: location });
+      }, 5000);
+    }
+  }, [isTracking,location])
 
 
   return (
