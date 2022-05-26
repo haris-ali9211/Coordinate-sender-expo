@@ -13,12 +13,11 @@ const PORT = process.env.PORT || 5000;
 
 const io = socketIO(server);
 io.on('connection', socket => {
-  console.log(`🐱‍🚀User Connected: ${socket.id}`);
   console.log('client connected on websocket');
 
   setInterval(() => {
-    io.emit('ping', { data: "haris" });
-  }, 5000);
+    io.emit('ping', { data: "saman from backend" });
+  }, 10000);
 
   socket.on("send_message", (location) => {
     console.log("🚀socket.on ~ location", location)

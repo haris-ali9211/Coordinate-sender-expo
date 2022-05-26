@@ -56,27 +56,21 @@ export default function App() {
     };
   }, [isTracking]);
 
-
-
-  const sentMenages = () => {
-
-  }
-
   const [data, setData] = useState(null)
 
   useEffect(() => {
-    const socket = io('http://localhost:5000', {
-      // const socket = io('https://coordinate-sender-expo.herokuapp.com', {
+    // const socket = io('http://localhost:5000', {
+      const socket = io('https://coordinate-sender-expo.herokuapp.com', {
       transports: ['websocket']
     });
     socket.on("ping", (data: any) => {
       setData(data)
+      console.log("🚀 ~ file: App.js ~ line 74 ~ socket.on ~ data", data)
     })
     if (isTracking) {
       setInterval(() => {
-        console.log("🚀 ~ file: App.js ~ line 75 ~ useEffect ~ isTracking", location) 
         socket.emit("send_message", { location: location });
-      }, 5000);
+      }, 10000);
     }
   }, [isTracking,location])
 
@@ -99,7 +93,7 @@ export default function App() {
         onPress={isTracking ? stopTracking : handleClick}
       />
 
-      <View>
+      {/* <View>
         <TextInput
           placeholder='hello'
           style={styles.input}
@@ -109,7 +103,7 @@ export default function App() {
           onPress={sentMenages}
           color={"#138D75"}
         />
-      </View>
+      </View> */}
       <StatusBar style="auto" />
     </View>
   );
