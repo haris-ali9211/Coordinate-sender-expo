@@ -59,8 +59,8 @@ export default function App() {
   const [data, setData] = useState(null)
 
   useEffect(() => {
-    // const socket = io('http://localhost:5000', {
-      const socket = io('https://coordinate-sender-expo.herokuapp.com', {
+    const socket = io('http://localhost:5000', {
+      // const socket = io('https://coordinate-sender-expo.herokuapp.com', {
       transports: ['websocket']
     });
     socket.on("ping", (data: any) => {
@@ -70,9 +70,10 @@ export default function App() {
     if (isTracking) {
       setInterval(() => {
         socket.emit("send_message", { location: location });
+        console.log("🚀 ~ file: App.js ~ line 73 ~ setInterval ~ location", location)
       }, 10000);
     }
-  }, [isTracking,location])
+  }, [isTracking, location])
 
 
   return (
