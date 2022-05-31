@@ -47,7 +47,7 @@ export default function App() {
     if (isTracking) {
       int = setInterval(() => {
         getLocation();
-      }, 1000);
+      }, 10000);
     } else {
       clearInterval(int);
     }
@@ -70,7 +70,6 @@ export default function App() {
     if (isTracking) {
       setInterval(() => {
         socket.emit("send_message", { location: location });
-        console.log("🚀 ~ file: App.js ~ line 73 ~ setInterval ~ location", location)
       }, 10000);
     }
   }, [isTracking, location])
