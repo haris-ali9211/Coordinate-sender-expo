@@ -4,15 +4,25 @@ import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import * as Location from "expo-location";
 import * as Application from "expo-application";
 import io from 'socket.io-client';
-// const socket = io.connect("http://localhost:3001"); 
+import { ref, set, get, child } from "firebase/database"
+import firebaseStack from './firebase/Firebase';
+import * as Device from 'expo-device';
+
+
 
 export default function App() {
+  const db = firebaseStack();
+  const dbRef = ref(firebaseStack());
 
   const [errorMsg, setErrorMsg] = React.useState(null);
   const [isTracking, setIsTracking] = React.useState(false);
   const [permission, setPermission] = React.useState(false);
   const [location, setLocation] = useState(null);
-  const [sendData, setSendData] = useState(null);
+  const [counter, setCounter] = useState(0)
+
+
+
+
 
 
   const getLocation = async () => {
@@ -28,8 +38,13 @@ export default function App() {
     } else setIsTracking(true);
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location);
-    setSendData(location)
+    set(ref(db, `Location/${Device.brand}`), {
+      'latitude': location.coords.latitude,
+      'longitude': location.coords.longitude,
+    });
   };
+
+
 
   const handleClick = () => {
     setErrorMsg("");
@@ -41,6 +56,16 @@ export default function App() {
     setLocation(null);
     setErrorMsg("");
   };
+
+
+
+  const getPastLocation = ()=>{
+    setCounter(counter +1)
+    set(ref(db, `PastLocation/${Device.brand}/` + counter), {
+      'latitude': location.coords.latitude,
+      'longitude': location.coords.longitude,
+    });
+  }
 
   React.useEffect(() => {
     let int = null;
@@ -56,36 +81,32 @@ export default function App() {
     };
   }, [isTracking]);
 
-  const [data, setData] = useState(null)
-
-  useEffect(() => {
-    const socket = io('http://localhost:5000', {
-      // const socket = io('https://coordinate-sender-expo.herokuapp.com', {
-      transports: ['websocket']
-    });
-    socket.on("ping", (data: any) => {
-      setData(data)
-      console.log("🚀 ~ file: App.js ~ line 74 ~ socket.on ~ data", data)
-    })
-    if (isTracking) {
-      setInterval(() => {
-        socket.emit("send_message", { location: location });
+  React.useEffect(() => {
+    let int = null;
+    if (isTracking && location) {
+      int = setInterval(() => {
+        console.log("🚀 ~ file: App.js ~ line 62 ~ getPastLocation ~ counter", counter)
+        getPastLocation();
       }, 10000);
+    } else {
+      clearInterval(int);
     }
-  }, [isTracking, location])
+    return () => {
+      clearInterval(int);
+    };
+  }, [location,isTracking]);
+
 
 
   return (
     <View style={styles.container}>
 
-      <Text
-        style={styles.titleText}
-      >Latitude: {location?.coords.latitude}
-      </Text>
-      <Text
-        style={styles.titleText}
-      >Longitude: {location?.coords.longitude}</Text>
+      <Text style={styles.titleBrand}>Device: {Device.brand}</Text>
+      <Text style={styles.titleText}>Latitude: {location ? location.coords.latitude : 'getting Location'}</Text>
+      <Text style={styles.titleText}>Latitude: {location ? location.coords.longitude : 'getting Location'}</Text>
+
       <Text style={{ color: "red" }}>{errorMsg}</Text>
+
 
       <Button
         color={isTracking ? "#C70039" : "#138D75"}
@@ -120,6 +141,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold"
   },
+
+  titleBrand: {
+    fontSize: 20,
+    // fontWeight: "bold"
+  },
   input: {
     height: 40,
     margin: 12,
@@ -131,3 +157,5 @@ const styles = StyleSheet.create({
   }
 
 });
+
+
