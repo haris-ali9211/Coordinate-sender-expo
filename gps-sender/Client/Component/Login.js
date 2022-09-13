@@ -2,10 +2,10 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import React, { useEffect, useState } from 'react';
 import { ref, set, get, child } from "firebase/database"
 import firebaseStack from '../firebase/Firebase';
-import { async } from '@firebase/util';
 
 
-const Login = () => {
+
+const Login = ({ navigation }) => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -24,9 +24,12 @@ const Login = () => {
                 if (data != null) {
                     if (data.CNIC === email && data.Password === password) {
                         alert('Success')
+                        if (data.Driver == false) {
+                            navigation.navigate('LocationUI')
+                        }
                     }
                     else {
-                        alert('Failed')
+                        alert('This could happen due to slow internet connection')
                     }
 
                 }
@@ -38,24 +41,6 @@ const Login = () => {
             console.error(error);
         });
     }
-
-
-    const getTrailBalanceCounterLength = async () => {
-        get(child(dbRef, `UserData/`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                setData(snapshot.val())
-            } else {
-                console.log("No data available");
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
-    }
-
-
-    useEffect(() => {
-        // getTrailBalanceCounterLength()
-    }, [])
 
 
     return (
@@ -90,7 +75,7 @@ const Login = () => {
                     <TouchableOpacity style={Style.login_btn} onPress={handlePress}>
                         <Text style={Style.login_btn_text}>Login</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={Style.create_account_btn} onPress={() => navigation.navigate('Sign_up')}>
+                    <TouchableOpacity style={Style.create_account_btn} onPress={() => navigation.navigate('SignIn')}>
                         <Text style={Style.create_account_btn_text}>Create account instead</Text>
                     </TouchableOpacity>
                     <View style={Style.auth_view}>
@@ -142,55 +127,108 @@ const Style = StyleSheet.create({
         alignSelf: "center"
     },
     e_container2_text1: {
-        color: "white", fontWeight: "bold", fontSize: 45, letterSpacing: 1
+        color: "white", 
+        fontWeight: "bold", 
+        fontSize: 35, 
+        letterSpacing: 1
     },
     e_container2_text2: {
-        color: "white", fontWeight: "bold", fontSize: 35, lineHeight: 35, letterSpacing: 2
+        color: "white", 
+        fontWeight: "bold", 
+        fontSize: 35, 
+        lineHeight: 35, 
+        letterSpacing: 2
     },
     dot3: {
-        borderWidth: 4, borderColor: 'rgba(158, 150, 150, .3)', width: 25, height: 25, borderRadius: 1000, position: "absolute", top: "18%", right: "15%"
+        borderWidth: 4, 
+        borderColor: 'rgba(158, 150, 150, .3)', 
+        width: 25, 
+        height: 25, 
+        borderRadius: 1000, 
+        position: "absolute", 
+        top: "18%", 
+        
+        right: "15%"
     },
     log_container: {
-        width: '100%', height: '75%', backgroundColor: "white", borderTopRightRadius: 15, borderTopLeftRadius: 15, justifyContent: "center"
+        width: '100%', 
+        height: '75%', 
+        backgroundColor: "white", 
+        borderTopRightRadius: 15, 
+        borderTopLeftRadius: 15, 
+        justifyContent: "center"
     },
     log_container2: {
-        marginBottom: 90,
-        width: "80%", height: "85%", alignSelf: "center", justifyContent: "center"
+        // backgroundColor:'red',
+
+        // marginBottom: 90,
+        width: "80%", 
+        height: "75%", 
+        alignSelf: "center", 
+        justifyContent: "center"
     },
     log_container2_text: {
-        color: "black", fontWeight: "bold", fontSize: 35, marginTop: -10
+        color: "black", 
+        fontWeight: "bold", 
+        fontSize: 35, 
+        marginTop: -10
     },
     email_view: {
         marginVertical: 25
     },
     email_view_text: {
-        color: "gray", fontSize: 20
+        color: "gray", 
+        fontSize: 20
     },
     email_view_textinput: {
-        height: 30, padding: 5, borderBottomWidth: 1, color: "black"
+        height: 30, 
+        padding: 5, 
+        borderBottomWidth: 1, 
+        color: "black"
     },
     forgot_btn: {
-        width: "40%", marginVertical: 10
+        width: "40%", 
+        marginVertical: 10
     },
     forgot_btn_text: {
-        color: "#FF5F00", fontWeight: "bold"
+        color: "#FF5F00", 
+        fontWeight: "bold"
     },
     login_btn: {
-        width: "80%", height: 50, backgroundColor: "#FF5F00", borderRadius: 10, justifyContent: "center", alignItems: "center", alignSelf: "center", marginVertical: 5
+        width: "80%", 
+        height: 50, 
+        backgroundColor: "#FF5F00", 
+        borderRadius: 10, 
+        justifyContent: "center", 
+        alignItems: "center", 
+        alignSelf: "center", 
+        marginVertical: 5
     },
     login_btn_text: {
-        color: "white", fontWeight: "bold"
+        color: "white", 
+        fontWeight: "bold"
     },
     create_account_btn: {
-        width: "55%", justifyContent: "center", alignItems: "center", alignSelf: "center", marginVertical: 3
+        width: "55%", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        alignSelf: "center", 
+        marginVertical: 3
     },
     create_account_btn_text: {
-        color: "#FF5F00", fontWeight: "bold"
+        color: "#FF5F00", 
+        fontWeight: "bold"
     },
     auth_view: {
-        flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 5, width: "25%", alignSelf: "center"
+        flexDirection: "row", 
+        alignItems: "center", 
+        justifyContent: "space-between", 
+        marginVertical: 5, 
+        width: "25%", 
+        alignSelf: "center"
     },
     auth_icon: {
-        fontSize: 30, color: "#FF5F00"
+        fontSize: 30, 
+        color: "#FF5F00"
     }
 });
