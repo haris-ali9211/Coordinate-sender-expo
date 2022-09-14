@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import * as Location from "expo-location";
 import * as Application from "expo-application";
-import io from 'socket.io-client';
 import { ref, set, get, child } from "firebase/database"
 import firebaseStack from '../firebase/Firebase';
 import * as Device from 'expo-device';

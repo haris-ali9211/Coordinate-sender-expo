@@ -23,16 +23,16 @@ export default function App() {
 
   return (
 
-    <StudentLocation/>
-    // <NativeBaseProvider>
-    //   <NavigationContainer>
-    //     <Stack.Navigator>
-    //       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-    //       <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
-    //       <Stack.Screen name="LocationUI" component={LocationUI} />
-    //     </Stack.Navigator>
-    //   </NavigationContainer>
-    // </NativeBaseProvider>
+    <NativeBaseProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
+          <Stack.Screen name="LocationUI" component={LocationUI} /> */}
+          <Stack.Screen name="StudentLocation" component={StudentLocation}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 }
 
