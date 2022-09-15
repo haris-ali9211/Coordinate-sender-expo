@@ -128,20 +128,22 @@ const mapStyle = [
 
 const origin = { latitude: 24.9547844, longitude: 67.067563 };
 const destination = { latitude: 24.9283654, longitude: 67.0755405 };
-const coordinates = [
-    {
-        latitude: 24.9545444,
-        longitude: 67.067543
-    },
-    {
-        latitude: 24.9277844,
-        longitude: 67.022563
-    }
-]
+
 
 const GOOGLE_MAPS_APIKEY = GOOGLE_API_KEY;
 
 export default function App() {
+
+    const coordinates = [
+        {
+            latitude: 24.9545444,
+            longitude: 67.067543
+        },
+        {
+            latitude: 24.9277844,
+            longitude: 67.022563
+        }
+    ]
 
     const [currentLocation, setCurrentLocation] = useState(null);
     const [errorMsg, setErrorMsg] = React.useState(null);
@@ -167,19 +169,19 @@ export default function App() {
         setLocation(location);
     }
 
-    // React.useEffect(() => {
-    //     let int = null;
-    //     if (isTracking) {
-    //         int = setInterval(() => {
-    //             getLocation();
-    //         }, 10000);
-    //     } else {
-    //         clearInterval(int);
-    //     }
-    //     return () => {
-    //         clearInterval(int);
-    //     };
-    // }, [isTracking]);
+    React.useEffect(() => {
+        let int = null;
+        if (isTracking) {
+            int = setInterval(() => {
+                getLocation();
+            }, 10000);
+        } else {
+            clearInterval(int);
+        }
+        return () => {
+            clearInterval(int);
+        };
+    }, [isTracking]);
 
     //! firebase setup
 
@@ -201,19 +203,19 @@ export default function App() {
     }
 
 
-    React.useEffect(() => {
-        let int = null;
-        if (isTracking) {
-            int = setInterval(() => {
-                getLocationOfDriver();
-            }, 10000);
-        } else {
-            clearInterval(int);
-        }
-        return () => {
-            clearInterval(int);
-        };
-    }, [isTracking]);
+    // React.useEffect(() => {
+    //     let int = null;
+    //     if (isTracking) {
+    //         int = setInterval(() => {
+    //             getLocationOfDriver();
+    //         }, 10000);
+    //     } else {
+    //         clearInterval(int);
+    //     }
+    //     return () => {
+    //         clearInterval(int);
+    //     };
+    // }, [isTracking]);
 
 
     //! hardcode location  
@@ -264,7 +266,7 @@ export default function App() {
             >
                 {/* <Marker coordinate={tokyoRegion} /> */}
 
-                
+              
 
                 {
                     location != null && mapRef != null
@@ -329,6 +331,7 @@ export default function App() {
                 /> */}
 
             </MapView>
+
             <Text style={styles.text}>Current latitude: {region.latitude}</Text>
             <Text style={styles.text}>Current longitude: {region.longitude}</Text>
 
