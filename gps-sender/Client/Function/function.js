@@ -1,8 +1,7 @@
-import { decode } from "@mapbox/polyline"; 
-
+import { decode } from "@mapbox/polyline"; //please install this package before running!
 const getDirections = async (startLoc, destinationLoc) => {
     try {
-        const KEY = "AIzaSyBpQa3iZZhr1no2ymxxhgBGrck7rlhO1gg"; //put your API key here.
+        const KEY = "YOUR GOOGLE API KEY"; //put your API key here.
         //otherwise, you'll have an 'unauthorized' error.
         let resp = await fetch(
             `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${KEY}`
@@ -21,5 +20,3 @@ const getDirections = async (startLoc, destinationLoc) => {
         return error;
     }
 };
-
-export default getDirections

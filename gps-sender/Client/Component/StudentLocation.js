@@ -13,6 +13,9 @@ import firebaseStack from '../firebase/Firebase';
 import * as Location from "expo-location";
 import getDirections from '../Function/function';
 
+import { GOOGLE_API_KEY } from '@env'
+
+
 
 
 //! style for map
@@ -125,7 +128,18 @@ const mapStyle = [
 
 const origin = { latitude: 24.9547844, longitude: 67.067563 };
 const destination = { latitude: 24.9283654, longitude: 67.0755405 };
-const GOOGLE_MAPS_APIKEY = 'AIzaSyBpQa3iZZhr1no2ymxxhgBGrck7rlhO1gg';
+const coordinates = [
+    {
+        latitude: 24.9545444,
+        longitude: 67.067543
+    },
+    {
+        latitude: 24.9277844,
+        longitude: 67.022563
+    }
+]
+
+const GOOGLE_MAPS_APIKEY = GOOGLE_API_KEY;
 
 export default function App() {
 
@@ -153,20 +167,19 @@ export default function App() {
         setLocation(location);
     }
 
-    React.useEffect(() => {
-        let int = null;
-        if (isTracking) {
-            int = setInterval(() => {
-                getLocation();
-            }, 10000);
-        } else {
-            clearInterval(int);
-        }
-        return () => {
-            clearInterval(int);
-        };
-    }, [isTracking]);
-
+    // React.useEffect(() => {
+    //     let int = null;
+    //     if (isTracking) {
+    //         int = setInterval(() => {
+    //             getLocation();
+    //         }, 10000);
+    //     } else {
+    //         clearInterval(int);
+    //     }
+    //     return () => {
+    //         clearInterval(int);
+    //     };
+    // }, [isTracking]);
 
     //! firebase setup
 
@@ -188,19 +201,19 @@ export default function App() {
     }
 
 
-    // React.useEffect(() => {
-    //     let int = null;
-    //     if (isTracking) {
-    //       int = setInterval(() => {
-    //         getLocationOfDriver();
-    //       }, 10000);
-    //     } else {
-    //       clearInterval(int);
-    //     }
-    //     return () => {
-    //       clearInterval(int);
-    //     };
-    //   }, [isTracking]);
+    React.useEffect(() => {
+        let int = null;
+        if (isTracking) {
+            int = setInterval(() => {
+                getLocationOfDriver();
+            }, 10000);
+        } else {
+            clearInterval(int);
+        }
+        return () => {
+            clearInterval(int);
+        };
+    }, [isTracking]);
 
 
     //! hardcode location  
@@ -215,6 +228,13 @@ export default function App() {
     const tokyoRegion = {
         latitude: 24.8687345,
         longitude: 67.0822358,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+    };
+
+    const markerTest = {
+        latitude: 24.9583324,
+        longitude: 67.0673979,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
     };
@@ -243,6 +263,8 @@ export default function App() {
             // customMapStyle={mapStyle}
             >
                 {/* <Marker coordinate={tokyoRegion} /> */}
+
+                
 
                 {
                     location != null && mapRef != null
@@ -288,7 +310,19 @@ export default function App() {
                 }
                 {/* <MapViewDirections
                     origin={origin}
+                    waypoints={[
+                        {
+                            latitude: 24.9545444,
+                            longitude: 67.067543
+                        },
+                        {
+                            latitude: 24.9277844,
+                            longitude: 67.022563
+                        }
+                    ]
+                    }
                     destination={destination}
+                    mode={'DRIVING'}
                     apikey={GOOGLE_MAPS_APIKEY}
                     strokeWidth={3}
                     strokeColor="hotpink"
