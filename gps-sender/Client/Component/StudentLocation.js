@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 import MapView, { Marker, Circle, Polyline } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
-
+import { GOOGLE_API_KEY } from '@env'
 
 
 import { ref, set, get, child } from "firebase/database"
@@ -12,7 +12,8 @@ import firebaseStack from '../firebase/Firebase';
 
 import * as Location from "expo-location";
 
-import { GOOGLE_API_KEY } from '@env'
+
+import { Avatar, Actionsheet, useDisclose, Center, NativeBaseProvider } from "native-base";
 
 
 
@@ -156,6 +157,9 @@ export default function App() {
     const [directionStatus, setDirectionStatus] = useState(false)
     const [destinationLocation, setDestinationLocation] = useState([])
 
+    const [distance, setDistance] = useState(null)
+    const [duration, setDuration] = useState(null)
+
     const origin = {
         latitude: location ? location.coords.latitude : 21.8687345,
         longitude: location ? location.coords.longitude : 67.0677422,
@@ -287,9 +291,13 @@ export default function App() {
         }
 
     ]
-    // const getSpecificLocationOfMarker = (long, lat) => {
-    //     console.log("🚀 ~~ getSpecificLocationOfMarker", `Longitude ${long} latitude ${lat}`)
-    // }
+
+    const {
+        isOpen,
+        onOpen,
+        onClose
+    } = useDisclose();
+
     return (
         <View style={styles.container}>
             <MapView
@@ -310,9 +318,7 @@ export default function App() {
                         return (
                             <Marker
                                 onPress={() => {
-                                    console.log('press', obj.latitude, obj.longitude, key),
-                                        setDestinationLocation(destination)
-                                    console.log("🚀destination", destinationLocation)
+                                    setDestinationLocation(destination)
                                 }}
                                 key={key}
                                 coordinate={
@@ -375,7 +381,7 @@ export default function App() {
 
                 }
                 {
-                    destinationLocation != null ?
+                    destinationLocation != null && location != null ?
                         <MapViewDirections
                             origin={origin}
                             // waypoints={[
@@ -402,12 +408,12 @@ export default function App() {
                                 console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
                             }}
                             onReady={result => {
-                                console.log(`Distance: ${result.distance} km`)
-                                console.log(`Duration: ${result.duration} min.`)
+                                setDistance(result.distance)
+                                setDuration(result.duration)
                             }}
                             onError={(errorMessage) => {
-                                alert('GOT AN ERROR',errorMessage);
-                              }}                 
+                                console.log('GOT AN ERROR', errorMessage)
+                            }}
                         />
                         : null
                 }
@@ -447,8 +453,8 @@ export default function App() {
 
             </MapView>
 
-            <Text style={styles.text}>Current latitude: {region.latitude}</Text>
-            <Text style={styles.text}>Current longitude: {region.longitude}</Text>
+            {/* <Text style={styles.text}>Current latitude: {region.latitude}</Text>
+            <Text style={styles.text}>Current longitude: {region.longitude}</Text> */}
 
             {
                 location != null ? <Text>location hai</Text> : <Text>location nahi hai</Text>
@@ -457,14 +463,65 @@ export default function App() {
             {
                 location != null
                     ?
-                    <TouchableOpacity onPress={goToTokyo}>
-                        <View>
-                            <Text style={{ borderBottomWidth: 1, borderColor: "grey", marginVertical: 10, backgroundColor: 'red' }}>Current Location</Text>
-                        </View>
-                    </TouchableOpacity>
+                    <View>
+                        <TouchableOpacity onPress={goToTokyo}>
+                            <View>
+                                <Text style={{ borderBottomWidth: 1, borderColor: "grey", marginVertical: 10, backgroundColor: 'red', textAlign: 'center' }}>Current Location</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={onOpen}>
+                            <View>
+                                <Text style={{ borderBottomWidth: 1, borderColor: "grey", marginVertical: 10, backgroundColor: 'red' }}>Distance Calculator</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     :
                     null
             }
+            <Actionsheet isOpen={isOpen} onClose={onClose}>
+                <Actionsheet.Content>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+
+                        <View>
+                            <Avatar bg="green.500" alignSelf="center" size="lg" source={{
+                                uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                            }}>
+                                AJ
+                            </Avatar>
+                        </View>
+
+                        <View style={{ flexDirection: 'column' }}>
+                            <Text style={{ marginLeft: 22, fontSize: 15 }}>Driver: Ali Jones</Text>
+                            <Text style={{ marginLeft: 22, fontSize: 15 }}>Car: Mercedes </Text>
+                            <Text style={{ marginLeft: 22, fontSize: 15 }}>Cnic: 42101-221-321 </Text>
+                        </View>
+
+                    </View>
+
+                    <View style={{ flexDirection: 'column' }}>
+                        <View>
+                            <Text style={{ marginTop: 22, fontSize: 15 }}>This car is
+                                <Text style={{ color: 'green', fontWeight: 'bold' }}>
+                                    {` ${distance} `}
+                                </Text>
+                                km away form you Location
+                            </Text>
+                        </View>
+
+                        <View>
+                            <Text style={{ marginTop: 5, fontSize: 15 }}>That would take
+                                <Text style={{ color: 'green', fontWeight: 'bold' }}>
+                                    {duration ? ` ${duration.toFixed(2)} ` : null}
+                                </Text>
+                                mins each direction
+                            </Text>
+                        </View>
+
+                    </View>
+
+                </Actionsheet.Content>
+            </Actionsheet>
 
         </View>
     );

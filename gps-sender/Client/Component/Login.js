@@ -10,7 +10,8 @@ const Login = ({ navigation }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [data, setData] = useState([])
-
+    console.log("🚀   email", data)
+    
     const db = firebaseStack();
     const dbRef = ref(firebaseStack());
 
@@ -26,6 +27,9 @@ const Login = ({ navigation }) => {
                         alert('Success')
                         if (data.Driver == false) {
                             navigation.navigate('LocationUI')
+                        }
+                        else{
+                            navigation.navigate('Van-Tracker')
                         }
                     }
                     else {

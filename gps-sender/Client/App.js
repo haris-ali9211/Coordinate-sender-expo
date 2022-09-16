@@ -26,10 +26,10 @@ export default function App() {
     <NativeBaseProvider>
       <NavigationContainer>
         <Stack.Navigator>
-          {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
-          <Stack.Screen name="LocationUI" component={LocationUI} /> */}
-          <Stack.Screen name="StudentLocation" component={StudentLocation}/>
+          <Stack.Screen name="LocationUI" component={LocationUI} />
+          <Stack.Screen name="Van-Tracker" component={StudentLocation}/>
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
