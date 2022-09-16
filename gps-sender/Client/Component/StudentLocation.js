@@ -11,7 +11,6 @@ import { ref, set, get, child } from "firebase/database"
 import firebaseStack from '../firebase/Firebase';
 
 import * as Location from "expo-location";
-import getDirections from '../Function/function';
 
 import { GOOGLE_API_KEY } from '@env'
 
@@ -134,6 +133,8 @@ const GOOGLE_MAPS_APIKEY = GOOGLE_API_KEY;
 
 export default function App() {
 
+
+
     const coordinates = [
         {
             latitude: 24.9545444,
@@ -152,6 +153,17 @@ export default function App() {
     const [location, setLocation] = useState(null);
     const [LocationOfDriver, setLocationOfDriver] = useState([]);
 
+    const [directionStatus, setDirectionStatus] = useState(false)
+    const [destinationLocation, setDestinationLocation] = useState([])
+
+    const origin = {
+        latitude: location ? location.coords.latitude : 21.8687345,
+        longitude: location ? location.coords.longitude : 67.0677422,
+    };
+    var destinationFinal = {
+        latitude: destinationLocation ? destinationLocation.latitude : null,
+        longitude: destinationLocation ? destinationLocation.longitude : null,
+    };
 
 
     const getLocation = async () => {
@@ -255,6 +267,29 @@ export default function App() {
         mapRef.current.animateToRegion(tokyoRegion1, 3 * 1000);
     };
 
+
+    var arrayLocation = [
+        {
+            latitude: 24.946060,
+            longitude: 67.111917
+        },
+        {
+            latitude: 24.948346,
+            longitude: 67.116884
+        },
+        {
+            latitude: 24.943036,
+            longitude: 67.115753
+        },
+        {
+            latitude: 24.942046,
+            longitude: 67.119559
+        }
+
+    ]
+    // const getSpecificLocationOfMarker = (long, lat) => {
+    //     console.log("🚀 ~~ getSpecificLocationOfMarker", `Longitude ${long} latitude ${lat}`)
+    // }
     return (
         <View style={styles.container}>
             <MapView
@@ -266,7 +301,36 @@ export default function App() {
             >
                 {/* <Marker coordinate={tokyoRegion} /> */}
 
-              
+                {
+                    location != null ? arrayLocation.map((obj, key) => {
+                        const destination = {
+                            latitude: location ? obj.latitude : 24.8687345,
+                            longitude: location ? obj.longitude : 67.0677422,
+                        };
+                        return (
+                            <Marker
+                                onPress={() => {
+                                    console.log('press', obj.latitude, obj.longitude, key),
+                                        setDestinationLocation(destination)
+                                    console.log("🚀destination", destinationLocation)
+                                }}
+                                key={key}
+                                coordinate={
+                                    {
+                                        latitude: obj.latitude,
+                                        longitude: obj.longitude,
+                                    }
+                                }>
+                                <Image source={require("../image/van01.png")} style={{ height: 35, width: 35 }} />
+                            </Marker>
+                        )
+
+                    })
+                        :
+                        null
+                }
+
+
 
                 {
                     location != null && mapRef != null
@@ -310,25 +374,76 @@ export default function App() {
                         null
 
                 }
-                {/* <MapViewDirections
-                    origin={origin}
-                    waypoints={[
-                        {
-                            latitude: 24.9545444,
-                            longitude: 67.067543
-                        },
-                        {
-                            latitude: 24.9277844,
-                            longitude: 67.022563
-                        }
-                    ]
-                    }
-                    destination={destination}
-                    mode={'DRIVING'}
-                    apikey={GOOGLE_MAPS_APIKEY}
-                    strokeWidth={3}
-                    strokeColor="hotpink"
-                /> */}
+                {
+                    destinationLocation != null ?
+                        <MapViewDirections
+                            origin={origin}
+                            // waypoints={[
+                            //     {
+                            //         latitude: 24.9545444,
+                            //         longitude: 67.067543
+                            //     },
+                            //     {
+                            //         latitude: 24.9277844,
+                            //         longitude: 67.022563
+                            //     }
+                            // ]
+                            // }
+                            destination={destinationFinal}
+                            // destination={{
+                            //     latitude: destinationLocation ? destinationLocation.latitude : null,
+                            //     longitude: destinationLocation ? destinationLocation.longitude : null,
+                            // }}
+                            mode={'DRIVING'}
+                            apikey={GOOGLE_MAPS_APIKEY}
+                            strokeWidth={3}
+                            strokeColor={'#000000'}
+                            onStart={(params) => {
+                                console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
+                            }}
+                            onReady={result => {
+                                console.log(`Distance: ${result.distance} km`)
+                                console.log(`Duration: ${result.duration} min.`)
+                            }}
+                            onError={(errorMessage) => {
+                                alert('GOT AN ERROR',errorMessage);
+                              }}                 
+                        />
+                        : null
+                }
+
+                {/* {
+                    location != null ? arrayLocation.map((obj, key) => {
+                        const destination = { 
+                            latitude: location ? obj.latitude : 24.8687345, 
+                            longitude: location ? obj.latitude : 67.0677422, 
+                        };
+
+
+                        return (
+                            <Marker
+                                onPress={() => {
+                                    () => {
+                                        setDestinationLocation(true),
+                                        setDestinationLocation(destination)
+                                        console.log("🚀 ~ file: StudentLocation.js ~ line 404 ~ location!=null?arrayLocation.map ~ destination", destination)
+                                    }
+                                }}
+                                key={key}
+                                coordinate={
+                                    {
+                                        latitude: obj.latitude,
+                                        longitude: obj.longitude,
+                                    }
+                                }>
+                                <Image source={require("../image/van01.png")} style={{ height: 35, width: 35 }} />
+                            </Marker>
+                        )
+
+                    })
+                        :
+                        null
+                } */}
 
             </MapView>
 
