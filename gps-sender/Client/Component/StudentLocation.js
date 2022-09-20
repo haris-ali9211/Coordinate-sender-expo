@@ -288,6 +288,14 @@ export default function App() {
         {
             latitude: 24.942046,
             longitude: 67.119559
+        },
+        {
+            latitude: 24.967468,
+            longitude: 67.0676947
+        },
+        {
+            latitude: 24.9598138,
+            longitude: 67.0504961   
         }
 
     ]
@@ -384,17 +392,17 @@ export default function App() {
                     destinationLocation != null && location != null ?
                         <MapViewDirections
                             origin={origin}
-                            // waypoints={[
-                            //     {
-                            //         latitude: 24.9545444,
-                            //         longitude: 67.067543
-                            //     },
-                            //     {
-                            //         latitude: 24.9277844,
-                            //         longitude: 67.022563
-                            //     }
-                            // ]
-                            // }
+                            waypoints={[
+                                {
+                                    latitude: 24.9545444,
+                                    longitude: 67.067543
+                                },
+                                {
+                                    latitude: 24.9277844,
+                                    longitude: 67.022563
+                                }
+                            ]
+                            }
                             destination={destinationFinal}
                             // destination={{
                             //     latitude: destinationLocation ? destinationLocation.latitude : null,
@@ -457,7 +465,7 @@ export default function App() {
             <Text style={styles.text}>Current longitude: {region.longitude}</Text> */}
 
             {
-                location != null ? <Text>location hai</Text> : <Text>location nahi hai</Text>
+                location != null ? <Text>Location getting</Text> : <Text>location nahi hai</Text>
             }
 
             {
